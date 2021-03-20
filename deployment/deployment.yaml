@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-api-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-api-image
+  template:
+    metadata:
+      labels:
+        app: weather-api-image
+    spec:
+      containers:
+      - name: weather-api-image
+        image: us.icr.io/weather-api-dev/base-image:latest # change with your image name
+        ports:
+        - containerPort: 80
+        env:
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: API_KEY
+          - name: HASHED_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: HASHED_PASSWORD
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: SECRET_KEY
+          - name: OPEN_WEATHER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: OPEN_WEATHER_URL
+          - name: ACCESS_TOKEN_EXPIRE_MINUTES
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: ACCESS_TOKEN_EXPIRE_MINUTES

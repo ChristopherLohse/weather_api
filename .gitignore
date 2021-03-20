@@ -107,6 +107,8 @@ celerybeat.pid
 # Environments
 .env
 secret.yaml
+build_deploy_ibm.sh
+
 .venv
 env/
 venv/

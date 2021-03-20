@@ -1,38 +1,58 @@
-from typing import Optional
 from fastapi import FastAPI, HTTPException, Depends, Query
-from typing import Dict
-from typing import List
-from pydantic import BaseModel
-from pydantic import Field
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import time
 import logging
-import json
 import requests
 import os
 from starlette.responses import RedirectResponse
 from datetime import datetime, timedelta
-from src.authentification import *
-from src.weather_logic import *
+from src.authentification import (
+    authenticate_user,
+    create_access_token,
+    Token,
+    OAuth2PasswordRequestForm,
+    get_current_active_user,
+    User,
+    fake_users_db,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    status,
+)
+from src.weather_logic import get_response_body
 
-app = FastAPI()
+tags_metadata = tags_metadata = [
+    {
+        "name": "Token",
+        "description": "Receive a Bearer token with a valid username and password",
+    },
+    {
+        "name": "Recommendation",
+        "description": "Get a recommendation for your clothing, sun protection and the need for an Umbrella by Latitude and Longitude Values",
+    },
+]
+app = FastAPI(
+    openapi_tags=tags_metadata,
+    title="Weather-API",
+    docs_url="/",
+    description="An University Project by Christopher Lohse",
+    version="1.0.0",
+)
 
 logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s", level=logging.INFO
 )
 
-
-app = FastAPI()
 if os.getenv("DEPLOYMENT_TYPE") != "container":
     from dotenv import load_dotenv
+
     load_dotenv()
 
 api_key = os.getenv("API_KEY")
+url = os.getenv("OPEN_WEATHER_URL")
 
 
-@app.post("/token", response_model=Token)
+@app.post("/token", response_model=Token, tags=["Token"])
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(
-        fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -46,36 +66,43 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/")
-def get_redirected():
-    return RedirectResponse(url='/docs')
-    # return{"message": "hi"}
-
-
-@app.get("/api/V1/recommend/")
-async def get_recommendation(params: CustomQueryParams = Depends(), current_user: User = Depends(get_current_active_user)):
+@app.get("/api/V1/recommend/", tags=["Recommendation"])
+async def get_recommendation(
+    lat: float = Query(
+        ...,
+        title="Latitude",
+        description="The Latitude of the requested Location",
+        ge=-90,
+        le=90,
+    ),
+    lon: float = Query(
+        ...,
+        title="Latitude",
+        description="The Longitude of the requested Location",
+        ge=-180,
+        le=180,
+    ),
+    current_user: User = Depends(get_current_active_user),
+):
     exclude_list = ["minutely", "alerts", "daily"]
     response = dict()
-    logging.info(
-        f"received weather request for lat: {params.lat}, lon:{params.lon}")
+    logging.info(f"received weather request for lat: {lat}, lon:{lon}")
     try:
         r = requests.get(
-            f"https://api.openweathermap.org/data/2.5/onecall?lat={params.lat}&lon={params.lon}&exclude={exclude_list}&appid={api_key}&units=metric")
+            f"{url}?lat={lat}&lon={lon}&exclude={exclude_list}&appid={api_key}&units=metric",
+            timeout=1,
+        )
         response = r.json()
-    except requests.exceptions.ConnectionError as e:
-        logging.exception("Could not reach open weather api")
+    except requests.exceptions.Timeout as e:
+        logging.exception("The Connection to open Weather api timed out")
         raise HTTPException(
-            status_code=408, detail="Open Weather api is currently not available")
+            status_code=408, detail="The Connection to open Weather api timed out"
+        )
         return 0
-    if "cod" in response and response["cod"] == 401:
+    if r.status_code == 401:
         logging.exception("Wrong API key for Openweather api")
-        raise HTTPException(
-            status_code=401, detail=response)
+        raise HTTPException(status_code=401, detail=response)
         return 0
     logging.info("sucessfully send request to api")
 
-    clothing = clothing_descision(response["hourly"][0]["temp"])
-    umbrella = umbrella_descision(response["hourly"][0]["pop"])
-    uv_risk = uv_risk_descision(response["hourly"][0]["uvi"])
-
-    return [{"clothing": clothing, "risk": uv_risk, "umbrella": umbrella}]
+    return get_response_body(response)
