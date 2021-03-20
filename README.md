@@ -18,7 +18,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 Für `API_KEY` muss der persönliche api-Key für die Openweather api eingegeben werden. 
 Die url kann bei Bedarf durch Änderung von `OPEN_WEATHER_URL` angepasst werden.
 Da die API über ein Passwort gesichert ist, muss zunächst ein Passwort-Hash zur Authetifizierung des User generiert werden. Dies lässt sich am einfachsten mit folgenden Befehl im Terminal erreichen: <br>
-`htpasswd -bnBC 10 "" password | tr -d ':\n` wobei das Wortt `passwort` durch das gewümschte passworz ersetzt werden muss. Der Konsolenoutput muss dann als Wert für `HASHED_PASSWORD`gesetzt werden. 
+```
+htpasswd -bnBC 10 "" password | tr -d ':\n
+``` 
+wobei das Wortt `passwort` durch das gewümschte passworz ersetzt werden muss. Der Konsolenoutput muss dann als Wert für `HASHED_PASSWORD`gesetzt werden. 
 Auch ein Secret Key für die Verschlüsselung des Bearer Tokens ist dafür notwendig. Für diesen wert in die Konsole `openssl rand -hex 32` eingeben und den Output als Wert für `SECRET_KEY` setzen. 
 ### 3. Docker Imgage builden
 ```
