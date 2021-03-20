@@ -61,9 +61,9 @@ Das Deployment für das Image erzeugen.
 
 ## 4. Service für das deployment definieren
 
-'''
+```
 kubectl apply -f deployment/service.yaml
-'''
+```
 
 Definiert einen service für das weather-api-image deployement und exposed diesen Service öffentlich auf dem Port `30000`.
 eine gehostete Version (IBM-Cloud) kann [hier](http://weather-api.christopherlohse.de:30000/ "Title") werden.
