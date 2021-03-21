@@ -7,6 +7,7 @@ import requests
 import os
 from starlette.responses import RedirectResponse
 from datetime import datetime, timedelta
+
 # import authentification variables
 from src.authentification import (
     authenticate_user,
@@ -19,8 +20,24 @@ from src.authentification import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     status,
 )
+
 # import logic
 from src.weather_logic import get_response_body
+
+"""
+Weather API for an University Project by Christopher Lohse
+Part of the code is taken from: https://fastapi.tiangolo.com/tutorial/security/
+"""
+__author__ = "Christopher Lohse"
+__copyright__ = "Copyright 2012 Christopher Lohse"
+__credits__ = ["Christopher Lohse"]
+__license__ = "MIT"
+__version__ = "1.0."
+__maintainer__ = "Christopher Lohse"
+__email__ = "mail@christopherlohse.de"
+__status__ = "Development"
+
+
 # defining metadata for openapi specification
 tags_metadata = tags_metadata = [
     {
@@ -55,7 +72,7 @@ url = os.getenv("OPEN_WEATHER_URL")
 
 @app.post("/token", response_model=Token, tags=["Token"])
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    '''
+    """
     Generates  a bearer token for a specified user
     Parameters
     ----------
@@ -66,9 +83,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     -------
 
     A Bearer token
-    '''
+    """
     user = authenticate_user(
-        fake_users_db, form_data.username, form_data.password)  # load user DB to check wether username exists
+        fake_users_db, form_data.username, form_data.password
+    )  # load user DB to check wether username exists
     # check if user is in DB
     if not user:
         raise HTTPException(
@@ -101,9 +119,9 @@ async def get_recommendation(
     ),
     current_user: User = Depends(get_current_active_user),
 ):
-    '''
+    """
     Returns the recommendation for requested latitude and longitude values
-    '''
+    """
     exclude_list = ["minutely", "alerts", "daily"]
     response = dict()
     logging.info(f"received weather request for lat: {lat}, lon:{lon}")

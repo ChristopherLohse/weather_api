@@ -1,4 +1,3 @@
-
 from typing import Optional
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -12,6 +11,10 @@ if os.getenv("DEPLOYMENT_TYPE") != "container":
     from dotenv import load_dotenv
 
     load_dotenv()
+"""
+Authentification Part of the API written by Christopher Lohse
+Part of the code is taken from: https://fastapi.tiangolo.com/tutorial/security/
+"""
 # to get a string like this run:
 # openssl rand -hex 32
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -58,17 +61,26 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
+def get_password_hash(password: str) -> str:
+    """
+    Hashes a given password with bcrypt
+    """
     return pwd_context.hash(password)
 
 
-def get_user(db, username: str):
+def get_user(db: dict, username: str) -> UserInDB:
+    """
+    Returns User in Database
+    """
     if username in db:
         user_dict = db[username]
         return UserInDB(**user_dict)
 
 
-def authenticate_user(fake_db, username: str, password: str):
+def authenticate_user(fake_db: dict, username: str, password: str) -> User:
+    """
+    Authentikates user and returns the user object
+    """
     user = get_user(fake_db, username)
     if not user:
         return False
@@ -78,6 +90,9 @@ def authenticate_user(fake_db, username: str, password: str):
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """
+    Creates an access token
+    """
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -89,6 +104,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    """
+    Verifies wether a beare token belongs to a user
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -109,6 +127,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
+    """
+    Checks if current User is active
+    """
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
