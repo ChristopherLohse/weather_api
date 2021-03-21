@@ -6,18 +6,6 @@ logging.basicConfig(
 )
 
 
-# class CustomQueryParams:
-#     def __init__(
-#         self,
-#         lat: float = Query(...,
-#                            description="The Latitude of the requested Location"),
-#         lon: float = Query(...,
-#                            description="The Longitude of the requested Location"),
-#     ):
-#         self.lat = lat
-#         self.lon = lon
-
-
 def get_clothing_decision(temperature: float) -> str:
     logging.info(f"The Temperature in the requested place is {temperature}")
     if temperature > 12.0:
@@ -47,6 +35,16 @@ def get_uv_risk_decision(uv_index: int) -> str:
 
 
 def get_response_body(response: dict) -> dict:
+    '''
+    Gives a recomendation of what to wear based on response of open weather api
+    Parameters
+    ----------
+    response: dict
+        The response of the open weather api
+    Returns
+    -------
+    A dict objet containing the recomendation
+    '''
     clothing = get_clothing_decision(response["hourly"][0]["temp"])
     umbrella = get_umbrella_decision(response["hourly"][0]["pop"])
     uv_risk = get_uv_risk_decision(response["hourly"][0]["uvi"])

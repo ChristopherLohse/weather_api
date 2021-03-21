@@ -16,7 +16,7 @@ if os.getenv("DEPLOYMENT_TYPE") != "container":
 # openssl rand -hex 32
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 hashed_password = os.getenv("HASHED_PASSWORD")
 
 fake_users_db = {
