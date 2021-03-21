@@ -43,7 +43,7 @@ Da die API über ein Passwort gesichert ist, muss zunächst ein Passwort-Hash zu
 ```
 htpasswd -bnBC 10 "" password | tr -d ':\n'
 ```
-Wobei das Wort `passwort` durch das gewünschte Passwort ersetzt werden muss. Der Konsolenoutput muss dann als Wert für `HASHED_PASSWORD`gesetzt werden.
+Wobei das Wort `password` durch das gewünschte Passwort ersetzt werden muss. Der Konsolenoutput (ohne das % am Ende) muss dann als Wert für `HASHED_PASSWORD`gesetzt werden.
 Auch ein Secret Key für die Verschlüsselung des Bearer Tokens ist dafür notwendig. Für diesen wert in die Konsole
 ```
 openssl rand -hex 32
