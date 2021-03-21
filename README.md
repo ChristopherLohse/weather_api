@@ -41,7 +41,7 @@ Für `API_KEY` muss der persönliche API-Key für die Openweather -API eingegebe
 Die url kann bei Bedarf durch Änderung von `OPEN_WEATHER_URL` angepasst werden.
 Da die API über ein Passwort gesichert ist, muss zunächst ein Passwort-Hash zur Authentifizierung des User generiert werden. Dies lässt sich am einfachsten mit folgendem Befehl im Terminal erreichen: <br>
 ```
-htpasswd -bnBC 10 "" password | tr -d ':\n
+htpasswd -bnBC 10 "" password | tr -d ':\n'
 ```
 Wobei das Wort `passwort` durch das gewünschte Passwort ersetzt werden muss. Der Konsolenoutput muss dann als Wert für `HASHED_PASSWORD`gesetzt werden.
 Auch ein Secret Key für die Verschlüsselung des Bearer Tokens ist dafür notwendig. Für diesen wert in die Konsole
