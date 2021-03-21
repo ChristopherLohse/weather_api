@@ -2,14 +2,15 @@
 
 Eine gehostete Version (IBM-Cloud) kann [hier](http://weather-api.christopherlohse.de:30000/ "Title") werden.
 Um die API zu nutzen, muss zunächst durch einen Postrequest mit Username und Passwort ein 30 Minuten gültiges Bearertoken angefragt werden:
-
+(hier ist der Nutzer `Harald-U`und das Passwort `kubernetes`)
 ```
 curl -X 'POST' \
   'http://weather-api.christopherlohse.de:30000/token' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'grant_type=&username=admin&password=This_is_a_secure_password&scope=&client_id=&client_secret='
+  -d 'grant_type=&username=Harald-U&password=kubernetes&scope=&client_id=&client_secret='
 ```
+Die hier angebeben Nutzerdaten sind in der gehostesten API freigeschaltet, allerdings nicht bei der selbstgehosteten.
 Mit dem zurückgebenden Accesstoken kann dann ein Getrequest an die API mit dem Bearer im Header gestellt werden:
 
 ```
@@ -39,11 +40,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 Für `API_KEY` muss der persönliche API-Key für die Openweather -API eingegeben werden.
 Die url kann bei Bedarf durch Änderung von `OPEN_WEATHER_URL` angepasst werden.
-Da die API über ein Passwort gesichert ist, muss zunächst ein Passwort-Hash zur Authentifizierung des User generiert werden. Dies lässt sich am einfachsten mit folgendem Befehl im Terminal erreichen: <br>
+Da die API über ein Passwort gesichert ist, muss zunächst ein Passwort-Hash zur Authentifizierung des User generiert werden. Dies lässt sich am einfachsten mit folgendem Befehl im Terminal erreichen:
 ```
-htpasswd -bnBC 10 "" password | tr -d ':\n
+htpasswd -bnBC 10 "" password | tr -d ':\n'
 ```
-Wobei das Wort `passwort` durch das gewünschte Passwort ersetzt werden muss. Der Konsolenoutput muss dann als Wert für `HASHED_PASSWORD`gesetzt werden.
+Wobei das Wort `password` durch das gewünschte Passwort ersetzt werden muss. Der Konsolenoutput (ohne das % am Ende) muss dann als Wert für `HASHED_PASSWORD`gesetzt werden.
 Auch ein Secret Key für die Verschlüsselung des Bearer Tokens ist dafür notwendig. Für diesen wert in die Konsole
 ```
 openssl rand -hex 32
@@ -59,12 +60,12 @@ eingeben
 docker run --env-file ./.env --name weather-api-container -p80:80 weather-api:latest
 ````
 Läd die eben erstellte .env file in den Container und lässt diesen laufen.
-Auf Localhost 80 sollte nun die Swagger-UI für die API erscheinen.
+Auf https://localhost/ sollte nun die Swagger-UI für die API erscheinen. Der Authentifizierungsprozess läuft so wie oben beschreiben ab, mit dem Unterschied, dass der Username `admin` ist und das Passwort das in 1. ausgewählte Passwort. Natürlich wäre hier eine datenbankanbindung die sinnvollere Lösung für das passwort, aber dies wäre zu aufwendig für den Scope des Projektes.
 
 ## Deployment mit Kubernetes
 Für ein Kubernetes-Deployment muss zunächst das Image entweder Lokal auf für z.B. Minikube zur Verfügung gestellt werden, oder auf eine Image Registry wie z.B. Docker Hub oder die IBM-Cloude Registry hochgeladen werden. Die Konfigurationsdateien für Kubernetes sind alle in dem `deployment` Ordner zu finden.
 ### 1. Secrets definieren
- Es werden für das Cluster entsprechend die Enviroment Variabeln gesetzt. Zunächst müssen in der secret.yaml, die im `deploymen` Ordner liegt, die Werte für `API_KEY`, `HASED_PASSWORD`, `SECRET_KEY` analog zu den in der .env definierten Variablen gesetzt werden.
+ Es werden für das Cluster entsprechend die Enviroment Variabeln gesetzt. Zunächst müssen in der secret.yaml, die im `deployment` Ordner liegt, die Werte für `API_KEY`, `HASED_PASSWORD`, `SECRET_KEY` analog zu den in der .env definierten Variablen gesetzt werden.
 ```
 kubectl apply -f deployment/secret.yaml
 ```
@@ -83,7 +84,7 @@ In der deployment.yaml ggf. den Image Namen anpassen und dann mit
 ```
 kubectl apply -f deployment/deployment.yaml
 ```
-Das Deployment für das Image erzeugen.
+Das Deployment für das Image erzeugen. In der deployment.yaml Datei wird das weather-api image in einem Pod mit einer Replica deployed und der Port 80 des Pods wird exposed. unter dem `env` Teil werden das definierte Secret und die definierte ConfigMap in die Enviroment Varibalen desPods geladen.
 
 ## 4. Service für das deployment definieren
 
@@ -91,6 +92,6 @@ Das Deployment für das Image erzeugen.
 kubectl apply -f deployment/service.yaml
 ```
 
-Definiert einen service für das weather-api-image deployement und exposed diesen Service öffentlich auf dem Port `30000`.
+Definiert einen service für das weather-api-image deployement. Der sService leitet den im deployment spezifizierten Port 80 weitzer und exposed diesen Service öffentlich auf dem Port `30000` über einen NodePort.
 
 
