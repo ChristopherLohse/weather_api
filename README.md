@@ -84,7 +84,7 @@ In der deployment.yaml ggf. den Image Namen anpassen und dann mit
 ```
 kubectl apply -f deployment/deployment.yaml
 ```
-Das Deployment für das Image erzeugen.
+Das Deployment für das Image erzeugen. In der deployment.yaml Datei wird das weather-api image in einem Pod mit einer Replica deployed und der Port 80 des Pods wird exposed. unter dem `env` Teil werden das definierte Secret und die definierte ConfigMap in die Enviroment Varibalen desPods geladen.
 
 ## 4. Service für das deployment definieren
 
@@ -92,6 +92,6 @@ Das Deployment für das Image erzeugen.
 kubectl apply -f deployment/service.yaml
 ```
 
-Definiert einen service für das weather-api-image deployement und exposed diesen Service öffentlich auf dem Port `30000`.
+Definiert einen service für das weather-api-image deployement. Der sService leitet den im deployment spezifizierten Port 80 weitzer und exposed diesen Service öffentlich auf dem Port `30000` über eine NodePort.
 
 
