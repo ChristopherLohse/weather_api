@@ -1,0 +1,168 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Weather-API",
+    "description": "An University Project by Christopher Lohse",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/token": {
+      "post": {
+        "tags": ["Token"],
+        "summary": "Login For Access Token",
+        "description": "Generates  a bearer token for a specified user\nParameters\n----------\nform_data:OAuth2PasswordRequestForm\n    PasswordRequestForm to generate a token\n\nreturns\n-------\n\nA Bearer token",
+        "operationId": "login_for_access_token_token_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_for_access_token_token_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Token" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/V1/recommend/": {
+      "get": {
+        "tags": ["Recommendation"],
+        "summary": "Get Recommendation",
+        "description": "Returns the recommendation for requested latitude and longitude values",
+        "operationId": "get_recommendation_api_V1_recommend__get",
+        "parameters": [
+          {
+            "description": "The Latitude of the requested Location",
+            "required": true,
+            "schema": {
+              "title": "Latitude",
+              "maximum": 90.0,
+              "minimum": -90.0,
+              "type": "number",
+              "description": "The Latitude of the requested Location"
+            },
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "description": "The Longitude of the requested Location",
+            "required": true,
+            "schema": {
+              "title": "Latitude",
+              "maximum": 180.0,
+              "minimum": -180.0,
+              "type": "number",
+              "description": "The Longitude of the requested Location"
+            },
+            "name": "lon",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "OAuth2PasswordBearer": [] }]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_login_for_access_token_token_post": {
+        "title": "Body_login_for_access_token_token_post",
+        "required": ["username", "password"],
+        "type": "object",
+        "properties": {
+          "grant_type": {
+            "title": "Grant Type",
+            "pattern": "password",
+            "type": "string"
+          },
+          "username": { "title": "Username", "type": "string" },
+          "password": { "title": "Password", "type": "string" },
+          "scope": { "title": "Scope", "type": "string", "default": "" },
+          "client_id": { "title": "Client Id", "type": "string" },
+          "client_secret": { "title": "Client Secret", "type": "string" }
+        }
+      },
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ValidationError" }
+          }
+        }
+      },
+      "Token": {
+        "title": "Token",
+        "required": ["access_token", "token_type"],
+        "type": "object",
+        "properties": {
+          "access_token": { "title": "Access Token", "type": "string" },
+          "token_type": { "title": "Token Type", "type": "string" }
+        }
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": ["loc", "msg", "type"],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "msg": { "title": "Message", "type": "string" },
+          "type": { "title": "Error Type", "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": { "password": { "scopes": {}, "tokenUrl": "token" } }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Token",
+      "description": "Receive a Bearer token with a valid username and password"
+    },
+    {
+      "name": "Recommendation",
+      "description": "Get a recommendation for your clothing, sun protection and the need for an Umbrella by Latitude and Longitude Values"
+    }
+  ]
+}
