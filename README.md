@@ -1,8 +1,10 @@
 # Weather-api
-Aufgabe war es eine Wrapper-API für dei Open-Weather-API zu bauen, die mit folgender Businnes-Logik funktioniert:
+Aufgabe war es eine Wrapper-API für die Open-Weather-API zu bauen, die mit folgender Business-Logik funktioniert:
 >Der Microservice „bewertet“ die nächste Stunde in der Vorhersage, d.h. Sie benutzen die Vorhersagedaten desArray-Elementshourly[1] für Temperatur (temp), UV-Index (uvi) und Niederschlagswahrscheinlichkeit (pop, probability of precipation).•Die Temperatur soll einen von drei Entscheidungswerten erzeugen: "tshirt" (> 12 °C), "sweater" (≤ 12 °C und > 5 °C)oder "coat" (≤ 5 °C).  Variablenname: clothes•Der UV-Index-Wert liefert eine Risikobewertung ("low" – "extreme", Einteilung siehe https://en.wikipedia.org/wiki/Ultraviolet_index). Implementieren Sie „low“, „moderate“ und „high“. Variablenname: risk•Die Niederschlagswahrscheinlichkeit pop kann einen Wert zwischen 0 (kein Niederschlag) und 1 (100 % Wahrscheinlichkeit) annehmen. pop < 0.1 (10 %) ergibt den Wert "no", pop ≥ 0.1 den Wert "yes". Variablenname: umbrellaDas Ergebnis soll als Typ „application/json“ an das Frontend übergeben werden, z.B.:{"clothes": "tshirt", "risk": "moderate", "umbrella": "no"}
 
-Die API wurde mit Python in dem Framework Fastapi umgesetzt und richtet sich in der Struktur an der standard Fastapi/Python Projektstruktur mit einem Ordner 'app' außerhalb, in dem eine Datei 'main.py' liegt. In der main.py werden die API-Routen definiert und die weitere Logik wie Authentifizierung und die Businneslogik ist in zwei weiteren Files in dem Unterordner 'app/src' definiert. Die Businesslogic ist in 'app/src/weather_logic.py' definiert und die Authentifizierung in 'app/src/authentification.py'. 
+Die API wurde mit Python in dem Framework Fastapi umgesetzt und richtet sich in der Struktur an der Standard Fastapi/Python Projektstruktur mit einem Ordner `app` außerhalb, in dem eine Datei 'main.py' liegt. In der main.py werden die API-Routen definiert und die weitere Logik wie Authentifizierung und die Businneslogik ist in zwei weiteren Files in dem Unterordner `app/src` definiert. Die Businesslogik ist in `app/src/weather_logic.py` definiert und die Authentifizierung in `app/src/authentification.py`.
+
+Wie in der `openapi.json` Datei zu sehen ist, wurden gängige Exceptions gehandelt. So wird eine Exception zurückgeben, wenn der Open-Weather-API-Key falsch ist oder die API zurzeit gerade nicht erreichbar ist. Außerdem wird eine validierung der Input Daten vorgenommen, bei der Überprüft wird, ob es sich bei den eingebenen Werten um Floatingpoint-Numbers in dem gültigen Bereich für Latitude (-90 bis 90) und Longitude(-180 bis 180) befinden. Dieses Exceptionhandling ist in der Datei 'app/main.py' definiert.
 
 Eine gehostete Version (IBM-Cloud) kann [hier](http://weather-api.christopherlohse.de:30000/ "Title") werden.
 Um die API zu nutzen, muss zunächst durch einen Postrequest mit Username und Passwort ein 30 Minuten gültiges Bearertoken angefragt werden:
@@ -14,7 +16,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'grant_type=&username=Harald-U&password=kubernetes&scope=&client_id=&client_secret='
 ```
-Die hier angebeben Nutzerdaten sind in der gehostesten API freigeschaltet, allerdings nicht bei der selbstgehosteten.
+Die hier angegebenen Nutzerdaten sind in der gehostesten API freigeschaltet, allerdings nicht bei der selbstgehosteten.
 Mit dem zurückgebenden Accesstoken kann dann ein Getrequest an die API mit dem Bearer im Header gestellt werden:
 
 ```
@@ -27,8 +29,6 @@ curl -X 'GET' \
 Der hier eingegebene Bearer muss mit dem zuvor generiertem Bearer ersetzt werden.
 Die Openapi UI befindet sich unter dem bereits oben genanntem [Link](http://weather-api.christopherlohse.de:30000/ "Title").
 Eine Openapi-JSON kann unter http://weather-api.christopherlohse.de:30000/openapi.json gefunden werden. Mit dieser JSON ist es z.B. möglich die API in einer anderen Programmiersprache nachzubauen oder direkt in z.B. [Postmann](https://learning.postman.com/docs/integrations/available-integrations/working-with-openAPI/) reinzuladen.
-
-Wie in der openapi.json zu sehen ist(auf deer höchsten Ebene in dem Projekt enhalten) wurden gängige Exceptions geahndelt. So wir eine Exception zurückgeben, wenn der Open-Weather-API-Key falsch ist oder die API zurzeit gerade nicht erreichbar ist. Außerdem wird eine validierung der Input Daten vorgenommen, bei der Überprüft wird, ob es sich bei den eingebenen Werten um Floatingpoint-Numbers in dem gültigem Bereich für Latitude (-90 bis 90) und Longitude(-180 bis 180) befinden. Dieses Exceptionhandling ist in der Datei 'app/main.py' definiert.
 
 ## Deployment mit Docker
 
@@ -99,6 +99,4 @@ Das Deployment für das Image erzeugen. In der deployment.yaml Datei wird das we
 kubectl apply -f deployment/service.yaml
 ```
 
-Definiert einen service für das weather-api-image deployement. Der sService leitet den im deployment spezifizierten Port 80 weitzer und exposed diesen Service öffentlich auf dem Port `30000` über einen NodePort.
-
-
+Definiert einen Service für das weather-api-image deployement. Der Service leitet den im Deployment spezifizierten Port 80 weiter und exposed diesen Service öffentlich auf dem Port `30000` über einen NodePort.
