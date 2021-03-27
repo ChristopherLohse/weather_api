@@ -1,4 +1,8 @@
 # Weather-api
+Aufgabe war es eine Wrapper-API für dei Open-Weather-API zu bauen, die mit folgender Businnes-Logik funktioniert:
+>Der Microservice „bewertet“ die nächste Stunde in der Vorhersage, d.h. Sie benutzen die Vorhersagedaten desArray-Elementshourly[1] für Temperatur (temp), UV-Index (uvi) und Niederschlagswahrscheinlichkeit (pop, probability of precipation).•Die Temperatur soll einen von drei Entscheidungswerten erzeugen: "tshirt" (> 12 °C), "sweater" (≤ 12 °C und > 5 °C)oder "coat" (≤ 5 °C).  Variablenname: clothes•Der UV-Index-Wert liefert eine Risikobewertung ("low" – "extreme", Einteilung siehe https://en.wikipedia.org/wiki/Ultraviolet_index). Implementieren Sie „low“, „moderate“ und „high“. Variablenname: risk•Die Niederschlagswahrscheinlichkeit pop kann einen Wert zwischen 0 (kein Niederschlag) und 1 (100 % Wahrscheinlichkeit) annehmen. pop < 0.1 (10 %) ergibt den Wert "no", pop ≥ 0.1 den Wert "yes". Variablenname: umbrellaDas Ergebnis soll als Typ „application/json“ an das Frontend übergeben werden, z.B.:{"clothes": "tshirt", "risk": "moderate", "umbrella": "no"}
+
+Die API wurde mit Python in dem Framework Fastapi umgesetzt und richtet sich in der Struktur an der standard Fastapi/Python Projektstruktur mit einem Ordner 'app' außerhalb, in dem eine Datei 'main.py' liegt. In der main.py werden die API-Routen definiert und die weitere Logik wie Authentifizierung und die Businneslogik ist in zwei weiteren Files in dem Unterordner 'app/src' definiert. Die Businesslogic ist in 'app/src/weather_logic.py' definiert und die Authentifizierung in 'app/src/authentification.py'. 
 
 Eine gehostete Version (IBM-Cloud) kann [hier](http://weather-api.christopherlohse.de:30000/ "Title") werden.
 Um die API zu nutzen, muss zunächst durch einen Postrequest mit Username und Passwort ein 30 Minuten gültiges Bearertoken angefragt werden:
@@ -23,6 +27,9 @@ curl -X 'GET' \
 Der hier eingegebene Bearer muss mit dem zuvor generiertem Bearer ersetzt werden.
 Die Openapi UI befindet sich unter dem bereits oben genanntem [Link](http://weather-api.christopherlohse.de:30000/ "Title").
 Eine Openapi-JSON kann unter http://weather-api.christopherlohse.de:30000/openapi.json gefunden werden. Mit dieser JSON ist es z.B. möglich die API in einer anderen Programmiersprache nachzubauen oder direkt in z.B. [Postmann](https://learning.postman.com/docs/integrations/available-integrations/working-with-openAPI/) reinzuladen.
+
+Wie in der openapi.json zu sehen ist(auf deer höchsten Ebene in dem Projekt enhalten) wurden gängige Exceptions geahndelt. So wir eine Exception zurückgeben, wenn der Open-Weather-API-Key falsch ist oder die API zurzeit gerade nicht erreichbar ist. Außerdem wird eine validierung der Input Daten vorgenommen, bei der Überprüft wird, ob es sich bei den eingebenen Werten um Floatingpoint-Numbers in dem gültigem Bereich für Latitude (-90 bis 90) und Longitude(-180 bis 180) befinden. Dieses Exceptionhandling ist in der Datei 'app/main.py' definiert.
+
 ## Deployment mit Docker
 
 Um die App lokal mit Docker zu starten sind im Vorhinein einige Schritte notwendig:
