@@ -6,7 +6,7 @@ Die API wurde mit Python in dem Framework Fastapi umgesetzt und richtet sich in 
 
 Wie in der `openapi.json` Datei zu sehen ist, wurden gängige Exceptions gehandelt. So wird eine Exception zurückgeben, wenn der Open-Weather-API-Key falsch ist oder die API zurzeit gerade nicht erreichbar ist. Außerdem wird eine validierung der Input Daten vorgenommen, bei der Überprüft wird, ob es sich bei den eingebenen Werten um Floatingpoint-Numbers in dem gültigen Bereich für Latitude (-90 bis 90) und Longitude(-180 bis 180) befinden. Dieses Exceptionhandling ist in der Datei 'app/main.py' definiert.
 
-Eine gehostete Version (IBM-Cloud) kann [hier](http://weather-api.christopherlohse.de:30000/ "Title") werden.
+Eine gehostete Version kann [hier](http://weather-api.christopherlohse.de "Title") gefunden werden.
 Um die API zu nutzen, muss zunächst durch einen Postrequest mit Username und Passwort ein 30 Minuten gültiges Bearertoken angefragt werden:
 (hier ist der Nutzer `Harald-U`und das Passwort `kubernetes`)
 ```
@@ -27,8 +27,8 @@ curl -X 'GET' \
 ```
 
 Der hier eingegebene Bearer muss mit dem zuvor generiertem Bearer ersetzt werden.
-Die Openapi UI befindet sich unter dem bereits oben genanntem [Link](http://weather-api.christopherlohse.de:30000/ "Title").
-Eine Openapi-JSON kann unter http://weather-api.christopherlohse.de:30000/openapi.json gefunden werden. Mit dieser JSON ist es z.B. möglich die API in einer anderen Programmiersprache nachzubauen oder direkt in z.B. [Postmann](https://learning.postman.com/docs/integrations/available-integrations/working-with-openAPI/) reinzuladen.
+Die Openapi UI befindet sich unter dem bereits oben genanntem [Link](http://weather-api.christopherlohse.de/ "Title").
+Eine Openapi-JSON kann unter http://weather-api.christopherlohse.de/openapi.json gefunden werden. Mit dieser JSON ist es z.B. möglich die API in einer anderen Programmiersprache nachzubauen oder direkt in z.B. [Postmann](https://learning.postman.com/docs/integrations/available-integrations/working-with-openAPI/) reinzuladen.
 
 ## Deployment mit Docker
 
@@ -67,7 +67,7 @@ eingeben
 docker run --env-file ./.env --name weather-api-container -p80:80 weather-api:latest
 ````
 Läd die eben erstellte .env file in den Container und lässt diesen laufen.
-Auf https://localhost/ sollte nun die Swagger-UI für die API erscheinen. Der Authentifizierungsprozess läuft so wie oben beschreiben ab, mit dem Unterschied, dass der Username `admin` ist und das Passwort das in 1. ausgewählte Passwort. Natürlich wäre hier eine datenbankanbindung die sinnvollere Lösung für das passwort, aber dies wäre zu aufwendig für den Scope des Projektes.
+Auf localhost:80 sollte nun die Swagger-UI für die API erscheinen. Der Authentifizierungsprozess läuft so wie oben beschreiben ab, mit dem Unterschied, dass der Username `admin` ist und das Passwort das in 1. ausgewählte Passwort. Natürlich wäre hier eine datenbankanbindung die sinnvollere Lösung für das passwort, aber dies wäre zu aufwendig für den Scope des Projektes.
 
 ## Deployment mit Kubernetes
 Für ein Kubernetes-Deployment muss zunächst das Image entweder Lokal auf für z.B. Minikube zur Verfügung gestellt werden, oder auf eine Image Registry wie z.B. Docker Hub oder die IBM-Cloude Registry hochgeladen werden. Die Konfigurationsdateien für Kubernetes sind alle in dem `deployment` Ordner zu finden.
