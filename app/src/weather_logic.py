@@ -44,9 +44,9 @@ def get_umbrella_decision(pop: float) -> bool:
     """
     logging.info(f"The propability to rain in the requested place is {pop}")
     if pop < 0.1:
-        return False
+        return "no"
     else:
-        return True
+        return "yes"
 
 
 def get_uv_risk_decision(uv_index: int) -> str:
