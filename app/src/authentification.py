@@ -28,6 +28,13 @@ fake_users_db = {
         "full_name": "admin",
         "hashed_password": hashed_password,
         "disabled": False,
+    }, 
+    "Harald-U":{
+        "username": "Harald-U",
+        "full_name": "Harald-U",
+        "hashed_password":"$2y$10$uIbaaBlrqrBOLkcOf.NEJedaM6V4j/S4lj/oVMEVsP/h8IlrqnGJy" ,
+        "disabled": False,
+
     }
 }
 
