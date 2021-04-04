@@ -77,7 +77,7 @@ Für ein Kubernetes-Deployment muss zunächst das Image entweder Lokal auf für 
 kubectl apply -f deployment/secret.yaml
 ```
 Definiert das Secret bei richtig gesetztem kubectl Kontext entsprechend.
-## 2. Configmap definieren
+### 2. Configmap definieren
 In der Datei `config.yaml` können bei bedarf die url zur Konsumierten api angepasst werden und der Timeout in Minuten für das Bearer Token definiert werden.
 Mit den eingesetzten Werten, funktioniert die Konfiguration allerdings auch.
 ```
