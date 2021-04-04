@@ -72,7 +72,7 @@ Auf localhost:80 sollte nun die Swagger-UI für die API erscheinen. Der Authenti
 ## Deployment mit Kubernetes
 Für ein Kubernetes-Deployment muss zunächst das Image entweder Lokal auf für z.B. Minikube zur Verfügung gestellt werden, oder auf eine Image Registry wie z.B. Docker Hub oder die IBM-Cloude Registry hochgeladen werden. Die Konfigurationsdateien für Kubernetes sind alle in dem `deployment` Ordner zu finden.
 ### 1. Secrets definieren
- Es werden für das Cluster entsprechend die Enviroment Variabeln gesetzt. Zunächst müssen in der secret.yaml, die im `deployment` Ordner liegt, die Werte für `API_KEY`, `HASED_PASSWORD`, `SECRET_KEY` analog zu den in der .env definierten Variablen gesetzt werden.
+ Es werden für das Cluster entsprechend die Enviroment Variabeln gesetzt. Zunächst müssen in der secret.yaml, die im `deployment` Ordner liegt, die Werte für `API_KEY`, `HASHED_PASSWORD`, `SECRET_KEY` analog zu den in der .env definierten Variablen gesetzt werden.
 ```
 kubectl apply -f deployment/secret.yaml
 ```
