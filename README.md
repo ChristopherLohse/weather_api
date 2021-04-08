@@ -1,4 +1,10 @@
-# Weather-api
+
+# Weather-API Portfoliprüfung verteilte Systeme
+
+Autor:  
+Christopher Lohse  
+
+
 Aufgabe war es eine Wrapper-API für die Open-Weather-API zu bauen, die mit folgender Business-Logik funktioniert:
 >Der Microservice „bewertet“ die nächste Stunde in der Vorhersage, d.h. Sie benutzen die Vorhersagedaten desArray-Elementshourly[1] für Temperatur (temp), UV-Index (uvi) und Niederschlagswahrscheinlichkeit (pop, probability of precipation).•Die Temperatur soll einen von drei Entscheidungswerten erzeugen: "tshirt" (> 12 °C), "sweater" (≤ 12 °C und > 5 °C)oder "coat" (≤ 5 °C).  Variablenname: clothes•Der UV-Index-Wert liefert eine Risikobewertung ("low" – "extreme", Einteilung siehe https://en.wikipedia.org/wiki/Ultraviolet_index). Implementieren Sie „low“, „moderate“ und „high“. Variablenname: risk•Die Niederschlagswahrscheinlichkeit pop kann einen Wert zwischen 0 (kein Niederschlag) und 1 (100 % Wahrscheinlichkeit) annehmen. pop < 0.1 (10 %) ergibt den Wert "no", pop ≥ 0.1 den Wert "yes". Variablenname: umbrellaDas Ergebnis soll als Typ „application/json“ an das Frontend übergeben werden, z.B.:{"clothes": "tshirt", "risk": "moderate", "umbrella": "no"}
 
