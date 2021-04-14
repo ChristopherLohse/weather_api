@@ -112,7 +112,7 @@ async def get_recommendation(
     ),
     lon: float = Query(
         ...,
-        title="Latitude",
+        title="Longitude",
         description="The Longitude of the requested Location",
         ge=-180,
         le=180,
