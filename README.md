@@ -70,7 +70,7 @@ docker build -t weather-api:latest .
 eingeben
 ### 4. Docker Container starten
 ```
-docker run --env-file ./.env --name weather-api-container -p80:80 weather-api:latest
+docker run --env-file ./.env --name weather-api-container -p80:80 -d weather-api:latest
 ````
 Läd die eben erstellte .env file in den Container und lässt diesen laufen.
 Auf localhost:80 sollte nun die Swagger-UI für die API erscheinen. Der Authentifizierungsprozess läuft so wie oben beschreiben ab, mit dem Unterschied, dass der Username `admin` ist und das Passwort das in 1. ausgewählte Passwort. Natürlich wäre hier eine datenbankanbindung die sinnvollere Lösung für das passwort, aber dies wäre zu aufwendig für den Scope des Projektes.
