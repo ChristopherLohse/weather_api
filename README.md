@@ -1,8 +1,7 @@
 
 # Weather-API Portfoliprüfung verteilte Systeme
 
-Autor:  
-Christopher Lohse  
+### von Christopher Lohse  
 
 
 Aufgabe war es eine Wrapper-API für die Open-Weather-API zu bauen, die mit folgender Business-Logik funktioniert:
