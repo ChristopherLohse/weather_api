@@ -9,7 +9,10 @@ Aufgabe war es eine Wrapper-API für die Open-Weather-API zu bauen, die mit folg
 
 Die API wurde mit Python in dem Framework Fastapi umgesetzt und richtet sich in der Struktur an der Standard Fastapi/Python Projektstruktur mit einem Ordner `app` außerhalb, in dem eine Datei `main.py` liegt. In der main.py werden die API-Routen definiert und die weitere Logik wie Authentifizierung und die Businneslogik ist in zwei weiteren Files in dem Unterordner `app/src` definiert. Die Businesslogik ist in `app/src/weather_logic.py` definiert und die Authentifizierung in `app/src/authentification.py`.
 
-Die Architektur der API ist an der Standard API-Architektur von [Fastapi](https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker) definiert. In dieser Konfiguration wird [Uvicorn](https://www.uvicorn.org) genutzt, um einen "lightning-fast "ASGI" server" zu starten. Das heißt der Uvicorn-Server kann asynchronen Python-Webcode in einem einzigem Prozess laufen lassen. Zum Management von mehreren Uvicorn Instanzen wird zum Deployment in Docker oder Kubernetes [Gunicorn](https://gunicorn.org/) genutzt.
+Die Architektur der API ist an der Standard API-Architektur von [Fastapi](https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker) definiert. In dieser Konfiguration wird [Uvicorn](https://www.uvicorn.org) genutzt, um einen "lightning-fast "ASGI" server" zu starten. Das heißt der Uvicorn-Server kann asynchronen Python-Webcode in einem einzigem Prozess laufen lassen. Zum Management von mehreren Uvicorn Instanzen wird zum Deployment in Docker oder Kubernetes [Gunicorn](https://gunicorn.org/) genutzt. (siehe Grafik unten)
+
+![Architektur des Microservices](architecture.png)
+
 
 Wie in der `openapi.json` Datei zu sehen ist, wurden gängige Exceptions gehandelt. So wird eine Exception zurückgeben, wenn der Open-Weather-API-Key falsch ist oder die API zurzeit gerade nicht erreichbar ist. Außerdem wird eine validierung der Input Daten vorgenommen, bei der Überprüft wird, ob es sich bei den eingebenen Werten um Floatingpoint-Numbers in dem gültigen Bereich für Latitude (-90 bis 90) und Longitude(-180 bis 180) befinden. Dieses Exceptionhandling ist in der Datei 'app/main.py' definiert.
 
