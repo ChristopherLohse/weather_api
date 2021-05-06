@@ -71,7 +71,7 @@ eingeben und den Output als Wert für `SECRET_KEY` setzen.
 ```
 docker build -t weather-api:latest .
 ```
-eingeben
+in der obersten Verzeichnisebene eingeben
 ### 4. Docker Container starten
 ```
 docker run --env-file ./.env --name weather-api-container -p80:80 -d weather-api:latest
